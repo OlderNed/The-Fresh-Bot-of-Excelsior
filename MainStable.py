@@ -4,6 +4,7 @@ import discord
 import logging
 import random
 import feedparser
+from string import printable
 
 #  ---------------------------Logging Start------------------------------------
 logger = logging.getLogger('discord')
@@ -205,3 +206,23 @@ async def on_message(message):
         em.set_footer(text="Made by Exanimem#3112 using Discord.py")
         # Creates footer for embed
         await client.send_message(message.channel, embed=em)
+ 
+# -------------------------- Client Events ---------------------------------
+
+async def on_member_join(member: discord.Member):
+    greeting = f"Greeting {member.mention} and welcome to {member.server}! Please read our rules in #info and enoy your stay"
+    await client.send_message(member.server, greeting)
+    #this doesn't work on some servers alt. solution might be having a config file and a command to set default server.
+    #channel = discord.utils.get(server.channels, name='general') 
+    #await cliend.send_message(channel, 'message') 
+    for character in member.name:
+        if character not in printable:
+            await client.change_nickname(member, 'Rule7')
+            await client.send_message(member.server, f"Due to the non aschii character \"{character}\", we've changed your name to \"Rule 7\""
+                  
+async def on_member_remove(member: discord.Member):
+    await client.send_message(member.server, f"{member.mention} has left us.}")
+                                      
+
+#-------------------------- Client Events End -------------------------------                   
+                              
